@@ -1,0 +1,33 @@
+<html><body>
+<div id="key1">
+</div>
+<script>
+  function makeid(length) {
+    var result = [];
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"#$%&/=?¡,._-';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result.push(characters.charAt(Math.floor(Math.random() *
+        charactersLength)));
+    }
+    return result.join('');
+  }
+  const key = "keyForTheVulnurablePassword";
+  if(localStorage.getItem(key) == null) {
+    let expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() + 1);
+    localStorage.setItem(key, JSON.stringify({pw:makeid(20), expire:expireDate}));
+  }
+  else {
+    let currentDate = new Date();
+    let storedExpireDate = new Date(JSON.parse(localStorage.getItem(key)).expire);
+    if(storedExpireDate <= currentDate) {
+      while(storedExpireDate <= currentDate) {
+        storedExpireDate.setDate(storedExpireDate.getDate() + 1);
+      }
+      localStorage.setItem(key, JSON.stringify({pw:makeid(20), expire:storedExpireDate}));
+    }
+  }
+document.getElementById("key1").innerHTML = JSON.parse(localStorage.getItem(key)).pw;
+</script>
+</body></html>
